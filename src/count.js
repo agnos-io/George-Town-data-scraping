@@ -1,7 +1,6 @@
 const puppeteer = require("puppeteer");
 
 const path = require("path");
-const { count } = require("console");
 const output_file_path = path.join(__dirname, "count2.csv");
 const createCsvWriter = require("csv-writer").createObjectCsvWriter;
 
@@ -27,16 +26,16 @@ const record_data_to_CSV = (state, lastNameInitialLetter, count) => {
 };
 
 const states = [
-  // "AL",
-  // "AK",
-  // "AB",
-  // "AS",
-  // "AZ",
-  // "AR",
-  // "AP",
-  // "AA",
-  // "AL",
-  // "BC",
+  "AL",
+  "AK",
+  "AB",
+  "AS",
+  "AZ",
+  "AR",
+  "AP",
+  "AA",
+  "AL",
+  "BC",
   "CA",
   "CZ",
   "CO",
