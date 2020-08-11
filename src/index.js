@@ -2,10 +2,12 @@
 // https://alumni-resources.georgetown.edu/s/1686/alumni/index.aspx?sid=1686&gid=4&pgid=6&cid=41
 // $AgnoS3234 ssl8 cid_41_SearchGUI_tdSearchLabel_731 cid_41_SearchGUI_sc729_mf_729 imod-profile-summary-member-name
 const puppeteer = require("puppeteer");
+const Recorder = require("./recorder");
 
 const path = require("path");
 const output_file_path = path.join(__dirname, "test2.csv");
 const createCsvWriter = require("csv-writer").createObjectCsvWriter;
+const recorder = new Recorder('data');
 
 const csvWriter = createCsvWriter({
   path: output_file_path,
@@ -54,6 +56,7 @@ const record_data_to_CSV = (data) => {
     .then(() => {
       console.log("Data Recorded");
     }).catch(err => console.log(err));
+  // recorder.record(data);
 };
 
 (async () => {
