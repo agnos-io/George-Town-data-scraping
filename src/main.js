@@ -5,7 +5,7 @@ const fillFormInDirectoryPage = require("./fillFormInDirectoryPage");
 
 let dataRecorder;
 const logger = new Recorder("logger", "logs");
-const profileUrlRecorder = new Recorder('profileUrl', 'profileUrlAddresses');
+const profileUrlRecorder = new Recorder("profileUrl", "profileUrlAddresses");
 
 const states = [
   "AL",
@@ -143,7 +143,7 @@ async function fetchAllUrlList(page, browser) {
           return { addresses, nextPage: !!element.nextElementSibling };
         }, element);
         proceed = nextPage;
-        profileUrlRecorder.record(addresses.map(ele => ({address:ele})));
+        profileUrlRecorder.record(addresses.map((ele) => ({ address: ele })));
         await fetchDataSync(addresses, browser);
       } catch {
         (err) => {
@@ -152,7 +152,7 @@ async function fetchAllUrlList(page, browser) {
             message: "Error while reading url addresses",
             log: err,
           });
-          console.log('Error while reading url addresses')
+          console.log("Error while reading url addresses");
         };
       }
     } while (proceed);
@@ -181,15 +181,15 @@ async function fetchRecordsRecursively(
 
         if (+count === 1000)
           await fetchRecordsRecursively(page, state, lastNameInitialLetter);
-        else fetchAllUrlList(page, browser);
+        else if (+count !== 0) await fetchAllUrlList(page, browser);
       } catch {
         (err) => {
           console.log(`Error for ${state} at ${lastNameInitialLetter}: `, err);
           logger.record({
-              log_type: 'Error',
-              message: `Error for ${state} at ${lastNameInitialLetter} while recursively applying filters`,
-              log: err
-          })
+            log_type: "Error",
+            message: `Error for ${state} at ${lastNameInitialLetter} while recursively applying filters`,
+            log: err,
+          });
           reject(err);
         };
       }
@@ -293,6 +293,7 @@ async function fetchDataAsync(address, browser) {
       });
       dataRecorder.record(info);
       await page.waitFor(30000);
+      page.close();
       resolve();
     } catch (err) {
       console.log(err);
@@ -301,9 +302,8 @@ async function fetchDataAsync(address, browser) {
         message: "Error while reading data from " + address,
         log: err,
       });
-      resolve();
-    } finally {
       page.close();
+      resolve();
     }
   });
 }
@@ -319,7 +319,7 @@ async function fetchDataSync(addresses, browser) {
     //   }
     //   await Promise.allSettled(dataPromises);
     // }
-    for(address of addresses){
+    for (address of addresses) {
       await fetchDataAsync(address, browser);
     }
     resolve();
