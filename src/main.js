@@ -292,7 +292,7 @@ async function fetchDataAsync(address, browser) {
         };
       });
       dataRecorder.record(info);
-      await page.waitFor(60000);
+      await page.waitFor(30000);
       resolve();
     } catch (err) {
       console.log(err);
