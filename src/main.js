@@ -10,37 +10,37 @@ const profileUrlRecorder = new Recorder("profileUrl", "profileUrlAddresses");
 const states = [
   "AL",
   "AK",
-  "AB",
-  "AS",
-  "AZ",
+  // "AB",
+  // "AS",
+  // "AZ",
   "AR",
   "AP",
   "AA",
   "AL",
-  "BC",
-  "CA",
-  "CZ",
-  "CO",
-  "CT",
+  // "BC",
+  // "CA",
+  // "CZ",
+  // "CO",
+  // "CT",
   "DE",
-  "DC",
-  "FM",
-  "FL",
-  "GA",
+  // "DC",
+  // "FM",
+  // "FL",
+  // "GA",
   "GU",
   "HI",
   "ID",
-  "IL",
+  // "IL",
   "IN",
   "IA",
   "KS",
   "KY",
-  "LB",
+  // "LB",
   "LA",
   "ME",
-  "MB",
+  // "MB",
   "MH",
-  "MD",
+  // "MD",
   "MA",
   "MI",
   "MN",
@@ -126,9 +126,10 @@ async function fetchAllUrlList(page, browser) {
     let proceed;
     do {
       try {
-        await page.waitForXPath(
-          "/html/body/form/div[3]/div/div[2]/div/div[2]/section/div[2]/div[8]/div/table/tbody/tr[1]/td[6]"
-        );
+        await page.waitFor(5000);
+        // await page.waitForXPath(
+        //   "/html/body/form/div[3]/div/div[2]/div/div[2]/section/div[2]/div[8]/div/table/tbody/tr[1]/td[6]"
+        // );
         const element = await page.$(".rgCurrentPage");
 
         let { addresses, nextPage } = await page.evaluate((element) => {
@@ -144,7 +145,8 @@ async function fetchAllUrlList(page, browser) {
         }, element);
         proceed = nextPage;
         profileUrlRecorder.record(addresses.map((ele) => ({ address: ele })));
-        await fetchDataSync(addresses, browser);
+        // await fetchDataSync(addresses, browser);
+        // await page.waitFor(2000);
       } catch {
         (err) => {
           logger.record({
@@ -293,7 +295,7 @@ async function fetchDataAsync(address, browser) {
       });
       dataRecorder.record(info);
       await page.waitFor(30000);
-      page.close();
+      await page.close();
       resolve();
     } catch (err) {
       console.log(err);
@@ -302,8 +304,8 @@ async function fetchDataAsync(address, browser) {
         message: "Error while reading data from " + address,
         log: err,
       });
-      page.close();
       resolve();
+      page.close();
     }
   });
 }
