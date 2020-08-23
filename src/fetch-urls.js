@@ -6,7 +6,7 @@ const fillFormInDirectoryPage = require("./fillFormInDirectoryPage");
 const logger = new Recorder("logger", "logs");
 let profileUrlRecorder;
 
-const state = 'AL'
+const state = 'WY'
 
 async function readCountFromPage(page) {
     return new Promise(async (resolve, reject) => {
@@ -127,7 +127,7 @@ async function fetchRecordsRecursively(
     await login(browser);
 
     const directory_page = await browser.newPage();
-
+    
     try {
         await directory_page.goto(
             "https://alumni-resources.georgetown.edu/s/1686/alumni/index.aspx?sid=1686&gid=4&pgid=6"
@@ -136,7 +136,7 @@ async function fetchRecordsRecursively(
         let count = await readCountFromPage(directory_page);
         if (+count < 1000 && +count > 0)
             await fetchAllUrlList(directory_page, browser);
-        else {
+        else if(+count === 1000) {
             await fetchRecordsRecursively(directory_page, state, "");
         }
         browser.close();

@@ -127,9 +127,9 @@ async function fetchAllUrlList(page, browser) {
     do {
       try {
         await page.waitFor(5000);
-        // await page.waitForXPath(
-        //   "/html/body/form/div[3]/div/div[2]/div/div[2]/section/div[2]/div[8]/div/table/tbody/tr[1]/td[6]"
-        // );
+        await page.waitForXPath(
+          "/html/body/form/div[3]/div/div[2]/div/div[2]/section/div[2]/div[8]/div/table/tbody/tr[1]/td[6]"
+        );
         const element = await page.$(".rgCurrentPage");
 
         let { addresses, nextPage } = await page.evaluate((element) => {
@@ -145,7 +145,7 @@ async function fetchAllUrlList(page, browser) {
         }, element);
         proceed = nextPage;
         profileUrlRecorder.record(addresses.map((ele) => ({ address: ele })));
-        // await fetchDataSync(addresses, browser);
+        await fetchDataSync(addresses, browser);
         // await page.waitFor(2000);
       } catch {
         (err) => {
@@ -333,7 +333,7 @@ async function fetchDataSync(addresses, browser) {
   await login(browser);
 
   const directory_page = await browser.newPage();
-
+  // console.log(states);
   for (var state of states) {
     dataRecorder = new Recorder("data", `data_${state}`);
     try {
@@ -344,7 +344,7 @@ async function fetchDataSync(addresses, browser) {
       let count = await readCountFromPage(directory_page);
       if (+count < 1000 && +count > 0)
         await fetchAllUrlList(directory_page, browser);
-      else {
+      else if(+count === 1000){
         await fetchRecordsRecursively(directory_page, state, "");
       }
     } catch {

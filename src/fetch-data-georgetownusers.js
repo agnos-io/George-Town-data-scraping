@@ -4,7 +4,7 @@ const login = require("./login.js");
 const Fs = require('fs');
 const CsvReadableStream = require('csv-reader');
 const path = require("path");
-const file_name = 'TX_ProfileUrlAddresses';
+const file_name = 'us_ProfileUrlAddresses';
 
 let dataRecorder;
 const logger = new Recorder("logger", "logs");
@@ -16,17 +16,20 @@ async function fetchData(address, browser) {
         try {
             await page.goto(address);
             await page.waitForXPath(
-                "/html/body/form/div[3]/div/div[2]/div/div[2]/section/div[2]/div/div/div[3]/div[2]/div/div[4]/div[2]/div/div/div[1]/div[2]"
+                "/html/body/form/div[3]/div[1]/div[2]/div/div[2]/section/div[2]/div[2]/div[1]/div[3]/div[3]/div[2]/div/div/div[1]/div[2]/div[2]/div[2]/ul/li[1]/div[1]"
             );
+            console.log('fetching data');
             info = await page.evaluate(() => {
                 const data = {};
                 const name = document.getElementsByClassName(
-                    "imod-profile-summary-member-name"
+                    "imod-profile-summary-member-name"//Top Profile name
                 )[0].innerText;
+                console.log(name)
                 data.name = name;
                 const label_nodes = document.getElementsByClassName(
-                    "imod-profile-field-label"
+                    "imod-profile-field-label"//Labels
                 );
+                console.log(label_nodes)
                 const labels = [];
                 for (var k = 0; k < label_nodes.length; k++) {
                     labels.push(label_nodes[k].innerText);
@@ -102,6 +105,8 @@ async function fetchData(address, browser) {
                     "all data": JSON.stringify(data),
                 };
             });
+            console.log('priting name:-')
+            console.log(`${info['First Name']} ${info['Last Name']}`)
             dataRecorder.record(info);
             await page.waitFor(30000);
             await page.close();
@@ -119,6 +124,30 @@ async function fetchData(address, browser) {
     });
 }
 
+async function getProfileDetails(occupation,state){
+    const addresses = []
+    dataRecorder = new Recorder("data", `AL_data`);
+    const browser = await puppeteer.launch({ headless: false });
+    await login(browser);
+    let inputStream = Fs.createReadStream(path.join(__dirname, `../output/George_Town/${occupation}/${state}/${file_name}.csv`), 'utf8');
+    inputStream
+        .pipe(new CsvReadableStream({ parseNumbers: true, parseBooleans: true, trim: true }))
+        .on('data', function (row) {
+            if(row[0]!="ADDRESS"){
+                addresses.push(row[0])
+            }
+        })
+        .on('end', function (data) {
+            (async () => {
+                console.log('Data Fetching Started');
+                for (var i = 0; i < addresses.length; i++) {
+                    console.log("Doing for:-",i+1)
+                    await fetchData(addresses[i], browser);
+                }
+            })();
+        });
+}
+
 (async () => {
     const addresses = []
     dataRecorder = new Recorder("data", `AL_data`);
@@ -128,12 +157,15 @@ async function fetchData(address, browser) {
     inputStream
         .pipe(new CsvReadableStream({ parseNumbers: true, parseBooleans: true, trim: true }))
         .on('data', function (row) {
-            addresses.push(row[0])
+            if(row[0]!="ADDRESS"){
+                addresses.push(row[0])
+            }
         })
         .on('end', function (data) {
             (async () => {
                 console.log('Data Fetching Started');
                 for (var i = 0; i < addresses.length; i++) {
+                    console.log("Doing for:-",i+1)
                     await fetchData(addresses[i], browser);
                 }
             })();
