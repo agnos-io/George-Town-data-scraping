@@ -304,7 +304,10 @@ async function getProfileUrl(occuaptions,states){
 }
 
 (async () => {
-    const browser = await puppeteer.launch({ headless: false });
+    const browser = await puppeteer.launch({ headless: false , args: [
+        "--disable-web-security",
+        "--disable-features=IsolateOrigins,site-per-process",
+      ],});
     
     await login(browser);
 

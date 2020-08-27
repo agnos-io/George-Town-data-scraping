@@ -12,6 +12,7 @@
   "dependencies": {
     "csv-reader": "^1.0.6",
     "csv-writer": "^1.6.0",
+    "mongoose": "^5.10.1",
     "puppeteer": "^5.2.1"
   }
 }

@@ -1,0 +1,3 @@
+{
+    "connectionString": "mongodb+srv://agnosuser1:agnos$1234@dataextraction.xdjwd.mongodb.net/test?retryWrites=true&w=majority"
+}
