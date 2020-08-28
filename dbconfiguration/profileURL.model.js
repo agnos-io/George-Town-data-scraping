@@ -7,8 +7,10 @@ const schema = new Schema({
     index:{ type: Number, required: true },
     occupationCode: { type: String, required: true },
     stateCode: { type: String, required: true },
+    source:{type: String, required: true},
     updated:{ type: Date, default: Date.now },
     dataRecorded:{type:Boolean,default:false},
+    dataEnriched:{type:Boolean,default:false},
     isDeleted:{type:Boolean,default:false}
 });
 

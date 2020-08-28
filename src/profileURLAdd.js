@@ -103,7 +103,7 @@ async  function addProfileData(occupation ,states,filePath){
             (async () => {
                 console.log('Data Fetching Started');
                 for (var i = 0; i < addresses.length; i++) {
-                    var data=new ProfileURL({url:addresses[i],mid:addresses[i].split("&")[4].split("=")[1],index:i+1,occupationCode:occupation,stateCode:states});
+                    var data=new ProfileURL({url:addresses[i],mid:addresses[i].split("&")[4].split("=")[1],index:i+1,occupationCode:occupation,stateCode:states,source:'George_Town_Carrer'});
                     console.log(data)
                     // console.log("Doing for:-",i+1)
                     // console.log(occupation)
