@@ -11,18 +11,18 @@ async function login(browser) {
           await login_page.type("#password", "$AgnoS3234");
           
           await login_page.click(".form-button");
-          console.log('cmoing to duo')
-          await login_page.waitForNavigation();
-          await login_page.waitFor(10000);
-          await login_page.waitForSelector('iframe');
-          const elementHandle = await login_page.$(
-            'iframe',
-          )
-          let frame = await elementHandle.contentFrame();
-          await frame.evaluate(() => {
-            document.getElementsByName('device')[0].value='phone2';
-            document.getElementsByClassName('auth-button positive')[0].click()
-          })
+          // console.log('cmoing to duo')
+          // await login_page.waitForNavigation();
+          // await login_page.waitFor(10000);
+          // await login_page.waitForSelector('iframe');
+          // const elementHandle = await login_page.$(
+          //   'iframe',
+          // )
+          // let frame = await elementHandle.contentFrame();
+          // await frame.evaluate(() => {
+          //   document.getElementsByName('device')[0].value='phone2';
+          //   document.getElementsByClassName('auth-button positive')[0].click()
+          // })
           // try{
           //   // console.log('watingn for x path')
           //   // await login_page.waitForXPath(
@@ -72,11 +72,12 @@ async function login(browser) {
           //   console.log(err);
           // }
           console.log('checked duo page');
-          await login_page.waitFor(450000);
+          await login_page.waitFor(45000);
           // await login_page.waitForNavigation();
           resolve();
         } catch {
           (err) => {
+            console.log(err);
             reject(err);
           };
         }

@@ -1,12 +1,12 @@
 const puppeteer = require("puppeteer");
 const Recorder = require("./recorder.js");
-const login = require("./login.js");
+const login = require("./login.js");``
 const fillFormInDirectoryPage = require("./fillFormInDirectoryPage");
 
 const logger = new Recorder("logger", "logs");
 let profileUrlRecorder;
-
-const state = 'WY'
+//Alabama,Alaska,Alberta,American Samao,<Arizona>,Arkansas,Armed Services California,Armed Services Florida,Armed Services New York,British Columbia,<California>,Canal Zone,<Colorado>,
+const state = 'CA'
 
 async function readCountFromPage(page) {
     return new Promise(async (resolve, reject) => {
@@ -26,6 +26,7 @@ async function readCountFromPage(page) {
                 (element) => element.textContent,
                 element
             );
+            console.log(countStatus.split(" ")[3])
             let count = countStatus.split(" ")[3];
             resolve(count);
         } catch {
@@ -91,11 +92,13 @@ async function fetchRecordsRecursively(
     browser
 ) {
     console.log("called for ", state, lastNameInitialLetterPrefix);
+    console.log(lastNameInitialLetterPrefix);
     return new Promise(async (resolve, reject) => {
         for (var l = 97; l < 123; l++) {
             try {
                 var lastNameInitialLetter =
                     lastNameInitialLetterPrefix + String.fromCharCode(l);
+                
                 await page.goto(
                     "https://alumni-resources.georgetown.edu/s/1686/alumni/index.aspx?sid=1686&gid=4&pgid=6"
                 );
@@ -125,7 +128,7 @@ async function fetchRecordsRecursively(
     profileUrlRecorder = new Recorder("profileUrl", `${state}_ProfileUrlAddresses`);
     const browser = await puppeteer.launch({ headless: false });
     await login(browser);
-
+    console.log('completed login')
     const directory_page = await browser.newPage();
     
     try {
@@ -137,6 +140,7 @@ async function fetchRecordsRecursively(
         if (+count < 1000 && +count > 0)
             await fetchAllUrlList(directory_page, browser);
         else if(+count === 1000) {
+            console.log('fetching record recursively')
             await fetchRecordsRecursively(directory_page, state, "");
         }
         browser.close();

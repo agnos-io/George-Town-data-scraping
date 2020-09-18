@@ -7,7 +7,7 @@ class Recorder {
   constructor(type, file_name) {
     this.type = type;
     let output_file_path, header;
-    output_file_path = path.join(__dirname, `../output/George_Town/HealthCare/${file_name}.csv`);
+    output_file_path = path.join(__dirname, `../output/GeorgeTown_Alumni/${file_name}.csv`);
     switch (type) {
       case "data": {
         header = [
