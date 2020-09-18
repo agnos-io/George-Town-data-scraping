@@ -4,8 +4,85 @@ const login = require("./login.js");
 const Fs = require('fs');
 const CsvReadableStream = require('csv-reader');
 const path = require("path");
+const { Occupation } = require("../dbconfiguration/db.js");
 const file_name = 'us_ProfileUrlAddresses';
-
+const occupationMap ={
+    "620000":'HealthCare'
+}
+const stateMap={
+    "TX" : 'TX',
+    "us":'US',
+    // us
+    'AE':'AE',
+    'AK':'AK',
+    'AL':'AL',
+    'AP':'AP',
+    'AR':'AR',
+    'AS':'AS',
+    'AZ':'AZ',
+    'BC':'BC',
+    'CA':'CA',
+    'CO':'CO',
+    'CT':'CT',
+    'DC':'DC',
+    'DE':'DE',
+    'FL':'FL',
+    'HI':'HI',
+    'IA':'IA',
+    'ID':'ID',
+    'IL':'IL',
+    'IN':'IN',
+    'KS':'KS',
+    'LA':'LA',
+    'LB':'LB',
+    'MA':'MA',
+    'MB':'MB',
+    'MD':'MD',
+    'ME':'ME',
+    'MI':'MI',
+    'MN':'MN',
+    'MP':'MP',
+    'MS':'MS',
+    'ca':'ca',
+    'MT':'MT',
+    'NB':'NB',
+    'NC':'NC',
+    'ND':'ND',
+    'NE':'NE',
+    'NJ':'NJ',
+    'NM':'NM',
+    'NS':'NS',
+    'NV':'NV',
+    'NY':'NY',
+    'OH':'OH',
+    'OK':'OK',
+    'ON':'ON',
+    'OR':'OR',
+    'PA':'PA',
+    'cy':'cy',
+    'QC':'QC',
+    'RI':'RI',
+    'SC':'SC',
+    'SD':'SD',
+    'SK':'SK',
+    'TN':'TN',
+    'UT':'UT',
+    'VA':'VA',
+    'VI':'VI',
+    'VT':'VT',
+    'WA':'WA',
+    'WI' : 'WI', 
+ 'WV' : 'WV' ,
+ 'gm' : 'gm' ,
+ 'gy' : 'gy' ,
+ 'ha' : 'ha' ,
+ 'ho' : 'ho' ,
+ 'mx' : 'mx' ,
+ 'nu' : 'nu' ,
+ 'pn' : 'pn' ,
+ 'ns' : 'ns' ,
+ 've' : 've', 
+}
 let dataRecorder;
 const logger = new Recorder("logger", "logs");
 
@@ -147,8 +224,40 @@ async function getProfileDetails(occupation,state){
             })();
         });
 }
-
+async function countProfileUrls(){
+    let count=0
+    for(var occupation of Object.keys(occupationMap)){
+        for(var states of Object.keys(stateMap)){
+            console.log(states);
+            console.log(occupationMap[occupation])
+            let filePath = path.join(__dirname, `../output/George_Town/${occupationMap[occupation]}/${states}/${states}_ProfileUrlAddresses.csv`);
+            console.log('file checking');
+            const address=[]
+            if(Fs.existsSync(filePath)){
+                let inputStream = Fs.createReadStream(path.join(__dirname, `../output/George_Town/${occupationMap[occupation]}/${states}/${states}_ProfileUrlAddresses.csv`), 'utf8');
+                console.log('reading file')
+                inputStream
+                    .pipe(new CsvReadableStream({ parseNumbers: true, parseBooleans: true, trim: true }))
+                    .on('data', function (row) {
+                        if(row[0]!="ADDRESS"){
+                            address.push(row[0])
+                        }
+                    })
+                    .on('end', function (data) {
+                        (async () => {
+                            console.log('Data Fetching Started');
+                            console.log(address)
+                            count=count+address.length;
+                            console.log(count);
+                        })();
+                    });            
+            }
+        }
+        console.log(count);
+    }
+}
 (async () => {
+    await countProfileUrls();
     const addresses = []
     dataRecorder = new Recorder("data", `AL_data`);
     const browser = await puppeteer.launch({ headless: false });
