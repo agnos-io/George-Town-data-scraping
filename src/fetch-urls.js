@@ -7,7 +7,7 @@ const logger = new Recorder("logger", "logs");
 let profileUrlRecorder;
 //Alabama,Alaska,Alberta,American Samao,<Arizona>,Arkansas,Armed Services California,Armed Services Florida,Armed Services New York,British Columbia,<California>,Canal Zone,<Colorado>,
 const state = 'CA'
-
+const statelist=['CA','WA']
 async function readCountFromPage(page) {
     return new Promise(async (resolve, reject) => {
         try {
@@ -57,6 +57,8 @@ async function fetchAllUrlList(page, browser) {
                 let { addresses, nextPage } = await page.evaluate((element) => {
                     var rows = document.getElementsByTagName("tbody")[5].children;
                     var addresses = [];
+                    console.log('in browser')
+                    console.log(rows);
                     for (var i = 0; i < rows.length; i++) {
                         addresses.push(rows[i].children[1].firstChild.href);
                     }
@@ -125,6 +127,8 @@ async function fetchRecordsRecursively(
 }
 
 (async () => {
+    for(var state of statelist){
+    console.log(state);
     profileUrlRecorder = new Recorder("profileUrl", `${state}_ProfileUrlAddresses`);
     const browser = await puppeteer.launch({ headless: false });
     await login(browser);
@@ -154,7 +158,8 @@ async function fetchRecordsRecursively(
             });
         };
     }
-
+    console.log('state completet')
+    }
     // for (var state of states) {
     //   dataRecorder = new Recorder("data", `data_${state}`);
     //   try {
